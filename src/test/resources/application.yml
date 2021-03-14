@@ -1,6 +1,8 @@
+
+#spring boot는 사실 아래 spring설정부분이 없어도 In memory모드로 동작을 시키기때문에 없어도됨.
 spring:
   datasource:
-    url: jdbc:h2:tcp://localhost/~/jpashop;MVCC=TRUE
+    url: jdbc:h2:mem:test #In memory모드 (실제 테스트모드에서는 db가 아닌 memory에 db를 띄워 테스트에 사용함.
     username: sa
     password:
     driver-class-name: org.h2.Driver
@@ -8,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
     properties:
       hibernate:
 #        show_sql: true # system.out.println을 사용해서 직접사용함.(운용에서 사용하면안됨)
