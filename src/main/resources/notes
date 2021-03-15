@@ -71,3 +71,5 @@ domain:엔티티가 모여있는 계층, 모든 계층에서 사용.
 * querydsl을 위한 설정 ->
  build.gradle 설정(plugin 및 build script /etc) -> gradle탭에서 -> Tasks-> other->compileQuerydsl 실행
  (build 폴더에 generated 폴더아래에 Qclass들이 생성됨.)
+ ( 코드 asistance + 컴파일 에러 + jpql과 거의 1대1매칭 장점을 가짐(직관적)=>JPQL을 잘알면 금방 배움.)
+ **JPA 애플리케이션을 개발할때 선택이 아닌 필수임.
