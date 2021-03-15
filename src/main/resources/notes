@@ -86,3 +86,8 @@ thymleaf -> layout(thymeleaf.org/doc/articles/layouts.html
 * Hierarchical-style layouts -> 여러 html에 공통적으로 적용할수있도록해서 include 코드 중복이 없음.
 
 *getbootstrap.com 에서 다운로드.
+
+-----
+(NotEmpty - spring boot 2.3부터는 javax.validation.constraints를 사용하기 위해서는 'org.springframework.boot:spring-boot-starter-validation' 추가해야함.
+* 회원 가입.
+
