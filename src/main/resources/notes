@@ -68,3 +68,6 @@ domain:엔티티가 모여있는 계층, 모든 계층에서 사용.
   (한프로젝트 내에서도 양립할 수 있음. )
 
 - 주문 검색 기능 구현(회원별 / 주문 상태별) => 동적쿼리 사용해야함.
+* querydsl을 위한 설정 ->
+ build.gradle 설정(plugin 및 build script /etc) -> gradle탭에서 -> Tasks-> other->compileQuerydsl 실행
+ (build 폴더에 generated 폴더아래에 Qclass들이 생성됨.)
