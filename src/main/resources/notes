@@ -99,3 +99,33 @@ API를 만들때는 절대 entity를 외부로 반환하면 안됨. API는 spec�
 추 후 entity에 로직이 변경되었을때 API Spec도 변경되므로.
 
 * 상품 수정( 수정 => jpa 변경감지 이용)
+준영속 상태란? 예를 들어 상품 수정 시점에 객체를 새로 생성(함수 updateItem) 하는데, 이 객체(id를 가짐)를 준영속성 엔티티라고 함.
+db id를 가지지만, jpa의 영속성컨텍스트에서 관리는 하지 않는 상태임. (book객체)
+=> save 시점에 단순히 em.persist를 하려고 하면, 동일한 id가 이미 영속성 컨텍스트에 있으므로 에러가나게됨.(detached entity passed to persist)
+ ( 실제 find와 같은 쿼리를 사용하여 jpa로 부터 받은 객체 혹은 id가 null인상태로 persist를 하는 객체를 제외한 경우
+   모두 준영속 객체임( 생성된 객체에 임의로 실제 db에있는 id를 넣는 경우도 jpa에서는 deteach된 객체로 여김.)
+
+*** 컨트롤러에서 entity를 생성하지 않는게 좋음
+(트랜잭션이 있는 서비스계층에 식별자(id)와 변경할 데이터를 명확하게 전달하여 처리 - dirty 자동 감지 처리하기 자연스러움).
+=> itemService.updateItem(itemId, name, price); // service쪽으로 위임.
+=> 파라미터가 복잡하다면 DTO(Data transfer object)를 이용하여 service쪽에 파라미터로 넘겨 위임 처리.
+
+준영속 엔티티를 수정하는 2가지 방법.
+- 변경 감지 기능 사용.(이게 정석임.)
+    ItemService에서..
+    @Transactional //자동 변경 감지에 의해 업데이트됨(dirty check).
+    public Item updateItem(Long itemId, Book bookParam) {
+        Item findItem = itemRepository.findOne(itemId);
+        findItem.changeItemPriceStock(bookParam.getPrice(), bookParam.getStock());
+        return findItem;
+    }
+
+- 병합(merge) 이용. => em.merge도 위에 코드처럼 내부적으로 변경 감지기능 사용. 약간의 차이가 있음. (merge는 더 위험하므로 안쓰는게 좋음.)
+    public void save(Item item) {
+        if (item.getId() == null) {
+            em.persist(item);
+        } else {
+            Item mergedItem = em.merge(item); //update와 유사. (merged Item이 영속성 컨텍스트에서 관리함. 인자로 들어온 item은 영속객체는 아님.
+                                              //merge 기능의 경우 모든 필드를 인자로 넘어온 item 필드로 변경함. (merge안쓰는게 좋음.)
+        }
+    }

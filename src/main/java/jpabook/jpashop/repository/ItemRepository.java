@@ -17,7 +17,8 @@ public class ItemRepository {
         if (item.getId() == null) {
             em.persist(item);
         } else {
-            em.merge(item); //update와 유사.
+            Item mergedItem = em.merge(item); //update와 유사. (merged Item이 영속성 컨텍스트에서 관리함. 인자로 들어온 item은 영속객체는 아님.
+                                              //merge 기능의 경우 모든 필드를 인자로 넘어온 item 필드로 변경함. (merge안쓰는게 좋음.)
         }
     }
 
