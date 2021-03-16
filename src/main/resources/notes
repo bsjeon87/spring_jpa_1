@@ -143,5 +143,6 @@ db id를 가지지만, jpa의 영속성컨텍스트에서 관리는 하지 않�
 컨트롤러 패키지 분리 -> web / api controller분리. (api/web의 경우 공통처리와 관점에 차이가 있어 분리시킴)
 
 ** 엔티티 값을 그대로 json형태를 사용하면 안됨 -> 엔티티(도메인)객체의 값을 변경하는 경우 API 스펙이 변경됨.( 엔티티는 많이 쓰이고,
-수정가능성이 높음.) => entity를 그대로 쓰지말고 API용 DTO(data transfer Object)를 만들어서 사용해야함.
+수정가능성이 높음.) => entity를 그대로 쓰지말고 명확한 API용 DTO(data transfer Object)를 만들어서 사용해야함.(개발자 입장에서도 API 스펙을 파악하기 쉬움)
+
 
