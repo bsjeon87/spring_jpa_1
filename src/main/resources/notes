@@ -97,3 +97,5 @@ Form의 Input을 위한 객체 생성(MemberForm). / DTO(Data Transfer Object)�
 ( ex: Member -> MemberForm )
 API를 만들때는 절대 entity를 외부로 반환하면 안됨. API는 spec이기때문에 변경되면 안됨.
 추 후 entity에 로직이 변경되었을때 API Spec도 변경되므로.
+
+* 상품 수정( 수정 => jpa 변경감지 이용)
