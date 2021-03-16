@@ -146,3 +146,10 @@ db id를 가지지만, jpa의 영속성컨텍스트에서 관리는 하지 않�
 수정가능성이 높음.) => entity를 그대로 쓰지말고 명확한 API용 DTO(data transfer Object)를 만들어서 사용해야함.(개발자 입장에서도 API 스펙을 파악하기 쉬움)
 
 
+RESTFull design guide
+-> 수정의 경우 put방식이 좋음.( 멱등(여러번해도 동일결과.) 한 특성..)?
+
+개발 정책
+-> 객체관점에서도 sql관점에 command( update/insert/delete )와 query(select)를 분리.
+   (entity 변경 api는 변경만 하고 변경된 객체 결과를 return하지 않음. 리턴 객체를 하게되면 query기능까지 포함되게 됨.)
+
