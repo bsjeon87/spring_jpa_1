@@ -153,3 +153,4 @@ RESTFull design guide
 -> 객체관점에서도 sql관점에 command( update/insert/delete )와 query(select)를 분리.
    (entity 변경 api는 변경만 하고 변경된 객체 결과를 return하지 않음. 리턴 객체를 하게되면 query기능까지 포함되게 됨.)
 
+API Spec = DTO (최대한 적게 노출하는게 좋음.)

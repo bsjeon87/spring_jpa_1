@@ -8,7 +8,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     properties:
       hibernate:
 #        show_sql: true # system.out.println을 사용해서 직접사용함.(운용에서 사용하면안됨)

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +34,21 @@ public class MemberApiController {
         return new CreateMemberResponse(member.getId());
     }
 
+    @GetMapping("/api/v1/members")
+    public List<Member> membersV1() {
+        return memberService.findMembers();
+    }
+
+    @GetMapping("/api/v2/members")
+    public Result memberV2() {
+        List<Member> members = memberService.findMembers();
+        //java 8.0 문법 (for문 돌려서 Dto list만들어도됨)
+        List<MemberDto> collect = members.stream().map(m -> new MemberDto(m.getName())).collect(Collectors.toList());
+
+        return new Result(collect); // list를 그대로 바로 보내면 json 배열타입으로 나가기때문에 유연성이 떨어짐. 그래서 오브젝트 타입으로 보냄.
+                                    // 배열타입: [ { }] / 오브젝트 타입: { }  , Result사용시 { "data": [ ] } 형태 (유연성을 위해서)
+    }
+
     @PutMapping("/api/v2/members/{id}")
     public UpdateMemberResponse updateMemberV2(@PathVariable("id") Long id,
                                                @RequestBody @Valid UpdateMemberRequest request) {
@@ -41,6 +58,17 @@ public class MemberApiController {
         return new UpdateMemberResponse(findMember.getId(), findMember.getName());
     }
 
+    @Data
+    @AllArgsConstructor
+    static class Result<T> {
+        private T data;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class MemberDto {
+        private String name;
+    }
     @Data
     static class UpdateMemberRequest {
         private String name;
