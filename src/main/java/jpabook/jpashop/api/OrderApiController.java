@@ -4,6 +4,7 @@ import jpabook.jpashop.domain.Address;
 import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderItem;
 import jpabook.jpashop.domain.OrderStatus;
+import jpabook.jpashop.domain.item.Item;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
 import lombok.Data;
@@ -53,7 +54,8 @@ public class OrderApiController {
         private LocalDateTime orderDate;
         private OrderStatus orderStatus;
         private Address address;
-        private List<OrderItem> orderItems; // 여전히 entity가 노출되어 있음.
+       // private List<OrderItem> orderItems; // 여전히 entity가 노출되어 있음.
+       private List<OrderItemDto> orderItems;
 
         public OrderDto(Order order) {
             orderId = order.getId();
@@ -62,10 +64,24 @@ public class OrderApiController {
             orderStatus = order.getStatus();
             address = order.getDelivery().getAddress();
 
-            order.getOrderItems().stream().forEach(i -> i.getItem().getName()); // 단순 처리.
+           // order.getOrderItems().stream().forEach(i -> i.getItem().getName()); // 단순 처리.
            // order.getOrderItems().stream().map(i -> i.getItem().getName()); //map 내용 수행안됨. 뒤에 연결된 함수에 따라 호출됨.
            // order.getOrderItems().stream().map(i -> i.getItem().getName()).collect(Collectors.toList()); // map내용 처리됨.
-            orderItems = order.getOrderItems();
+            orderItems = order.getOrderItems().stream().map(i -> new OrderItemDto(i)).collect(Collectors.toList());
+        }
+    }
+
+    @Getter
+    static class OrderItemDto {
+        //private Long id;
+        //private Item item;
+        private String itemName;
+        private int orderPrice;//주문가격
+        private int count;//주문수량
+        public OrderItemDto(OrderItem orderItem) {
+            this.orderPrice = orderItem.getOrderPrice();
+            this.count = orderItem.getCount();
+            this.itemName = orderItem.getItem().getName();
         }
     }
 }
