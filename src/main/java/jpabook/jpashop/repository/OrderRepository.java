@@ -129,10 +129,20 @@ public class OrderRepository {
     }
 
     public List<Order> findAllWithMemberDelivery() {
+        //join fetch이므로 해당 객체에 모든 정보를 퍼올림.
         return em.createQuery(
                 "select o from order o" +
                         " join fetch o.member" +
                         " join fetch o.delivery d", Order.class).getResultList();
 
+    }
+
+    public List<OrderSimpleQueryDto> findOrderDtos() {
+        // join fetch가 아니기 때문에 연관된 객체 중에 select 문에 포함되어 있는 정보만 뽑도록 쿼리를 날림.(좀더 최적화됨)
+        return em.createQuery(
+                "select new jpabook.jpashop.repository.OrderSimpleQueryDto(o.id, o.member.name, o.orderDate, o.status, d.address)" +
+                        " from Order o" +
+                        " join o.member m" +
+                        " join o.delivery d", OrderSimpleQueryDto.class).getResultList();
     }
 }
