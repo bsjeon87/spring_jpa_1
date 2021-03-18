@@ -1,8 +1,10 @@
 package jpabook.jpashop.api;
 
 import jpabook.jpashop.domain.Address;
+import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderStatus;
+import jpabook.jpashop.repository.MemberRepository;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
 import jpabook.jpashop.repository.OrderSimpleQueryDto;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 public class OrderSimpleApiController {
 
     private final OrderRepository orderRepository;
+    //private final MemberRepository memberRepository;
 
     // order 조회 v1 / v2 버전 모두 쿼리가 너무 많이나감.
     // (order select / order list를 돌면서 order별로 연관된 Memeber , Delivery select를 각각 날림.)
@@ -57,6 +60,17 @@ public class OrderSimpleApiController {
     @GetMapping("api/v4/simple-orders")
     public List<OrderSimpleQueryDto> orderV4() {
         return orderRepository.findOrderDtos();
+    }
+
+    @GetMapping("api/test")
+    public List<SimpleOrderDto> ordertest() {
+
+        // meberRepository에서 사용한느 entityManager와 orderRepository에서 사용하는 em이 동일. ( 영속성 관리가 이어짐)
+        //List<Member> members = memberRepository.findAll();
+
+        List<Order> orders = orderRepository.findAllByQueryDsl(new OrderSearch());
+        List<SimpleOrderDto> result = orders.stream().map(o -> new SimpleOrderDto(o)).collect(Collectors.toList());
+        return result;
     }
 
     @Data

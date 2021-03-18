@@ -1,6 +1,7 @@
 package jpabook.jpashop.api;
 
 import jpabook.jpashop.domain.Member;
+import jpabook.jpashop.repository.MemberRepository;
 import jpabook.jpashop.service.MemberService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 public class MemberApiController {
 
     private final MemberService memberService;
+   // private final MemberRepository memberRepository;
 
     @PostMapping("/api/v1/members") // @RequestBody -> json data를 Member로 매핑시켜줌.
     public CreateMemberResponse saveMemberV1(@RequestBody @Valid Member member) {
@@ -55,6 +57,7 @@ public class MemberApiController {
 
         memberService.update(id, request.getName());
         Member findMember = memberService.findOne(id);
+        //Member findMember = memberRepository.findOne(id); //update시의 영속성이 유지됨.
         return new UpdateMemberResponse(findMember.getId(), findMember.getName());
     }
 
