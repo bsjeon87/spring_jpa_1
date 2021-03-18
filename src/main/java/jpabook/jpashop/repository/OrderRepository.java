@@ -106,6 +106,9 @@ public class OrderRepository {
         QOrder order = QOrder.order;
         QMember member = QMember.member;
 
+
+        //System.out.println("process:" + ProcessHandle.current().pid() + "thread:" + Thread.currentThread().getId());
+
         return query.select(order)
                     .from(order)
                     .join(order.member, member)
