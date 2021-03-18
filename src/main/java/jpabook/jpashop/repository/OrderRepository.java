@@ -127,4 +127,12 @@ public class OrderRepository {
         }
         return QMember.member.name.like(memberName);
     }
+
+    public List<Order> findAllWithMemberDelivery() {
+        return em.createQuery(
+                "select o from order o" +
+                        " join fetch o.member" +
+                        " join fetch o.delivery d", Order.class).getResultList();
+
+    }
 }

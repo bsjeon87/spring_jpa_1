@@ -37,9 +37,18 @@ public class OrderSimpleApiController {
         return all;
     }
 
+    //N+1 문제 여전히 존재.
     @GetMapping("/api/v2/simple-orders")
     public List<SimpleOrderDto> ordersV2() {
         List<Order> orders = orderRepository.findAllByQueryDsl(new OrderSearch());
+        List<SimpleOrderDto> result = orders.stream().map(o -> new SimpleOrderDto(o)).collect(Collectors.toList());
+        return result;
+    }
+
+    //N+1문제 해결( 쿼리 한번나감.)
+    @GetMapping("api/v3/simple-orders")
+    public List<SimpleOrderDto> orderV3() {
+        List<Order> orders = orderRepository.findAllWithMemberDelivery();
         List<SimpleOrderDto> result = orders.stream().map(o -> new SimpleOrderDto(o)).collect(Collectors.toList());
         return result;
     }
