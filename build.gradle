@@ -33,6 +33,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-devtools'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5' //지연로딩일때는 json data만들시 뿌리않게 할수있음. Bean등록만 하면됨.
     implementation 'junit:junit:4.12'
 	implementation 'junit:junit:4.12'
 	implementation 'junit:junit:4.12'
