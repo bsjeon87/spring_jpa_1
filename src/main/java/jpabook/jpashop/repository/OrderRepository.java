@@ -148,4 +148,19 @@ public class OrderRepository {
                         " join o.member m" +
                         " join o.delivery d", OrderSimpleQueryDto.class).getResultList();
     }
+
+    public List<Order> findAllWithItem() {
+        //똑같은 객체가 다 관계 만큼 들어감.
+        // ( 일대다 관계( order:orderItem) - 쿼리를 하면  늘어난 상태로 db에서 데이터를 가지고 오고
+        //   jpa는 객체간의 관계를 정리하여 return함. -> 정리하는 과정에서 일대다 관계때문에 늘어난 부분은 컬렉션으로 변경됨.
+        //   변경은 되었지만 쿼리에서 가지고 온 데이터 갯수는 뻥튀기된 컬럼갯수이므로 그만큼 채워서 리턴하게됨. )
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d" +
+                        " join fetch o.orderItems oi" +
+                        " join fetch oi.item i", Order.class)
+                .getResultList();
+
+    }
 }

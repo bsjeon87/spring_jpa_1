@@ -46,6 +46,14 @@ public class OrderApiController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/api/v3/orders")
+    public List<OrderDto> ordersV3() {
+        List<Order> orders = orderRepository.findAllWithItem();
+        return orders.stream()
+                .map(o -> new OrderDto(o))
+                .collect(Collectors.toList());
+    }
+
     //@Data // 여러개를 만들어줌. toString 이런것등등. @Getter만 만들어줘도 문제가 되지 않음.
     @Getter
     private class OrderDto {
