@@ -139,7 +139,17 @@ public class OrderRepository {
                         " join fetch o.delivery d", Order.class).getResultList();
 
     }
+    public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+        //join fetch이므로 해당 객체에 모든 정보를 퍼올림.
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member" +
+                        " join fetch o.delivery d", Order.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
 
+    }
     public List<OrderSimpleQueryDto> findOrderDtos() {
         // join fetch가 아니기 때문에 연관된 객체 중에 select 문에 포함되어 있는 정보만 뽑도록 쿼리를 날림.(좀더 최적화됨)
         return em.createQuery(

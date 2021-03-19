@@ -12,9 +12,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,9 +48,38 @@ public class OrderApiController {
                 .collect(Collectors.toList());
     }
 
+    Long tempId;
+    Long tempId2;
     @GetMapping("/api/v3/orders")
     public List<OrderDto> ordersV3() {
         List<Order> orders = orderRepository.findAllWithItem();
+        tempId  = orders.get(0).getId();
+        tempId2 = orders.get(1).getId();
+        return orders.stream()
+                .map(o -> new OrderDto(o))
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/api/v3/orders_test")
+    public List<OrderDto> ordersV3_test() {
+        Order order = orderRepository.findOne(tempId);
+        //Order order2 = orderRepository.findOne(tempId2);
+        List<OrderDto> newArray = new ArrayList<>();
+        OrderDto orderDto = new OrderDto(order);
+       // OrderDto orderDto2 = new OrderDto(order2);
+        newArray.add(orderDto);
+        //newArray.add(orderDto2);
+        return newArray;
+    }
+
+    @GetMapping("/api/v3.1/orders")
+    public List<OrderDto> ordersV3_page(
+            @RequestParam(value = "offset", defaultValue = "0") int offset,
+            @RequestParam(value = "limit", defaultValue = "100") int limit
+    ) {
+        List<Order> orders = orderRepository.findAllWithMemberDelivery(offset, limit);
+
+
         return orders.stream()
                 .map(o -> new OrderDto(o))
                 .collect(Collectors.toList());
