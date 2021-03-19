@@ -134,7 +134,7 @@ public class OrderRepository {
     public List<Order> findAllWithMemberDelivery() {
         //join fetch이므로 해당 객체에 모든 정보를 퍼올림.
         return em.createQuery(
-                "select o from order o" +
+                "select o from Order o" +
                         " join fetch o.member" +
                         " join fetch o.delivery d", Order.class).getResultList();
 
@@ -154,8 +154,22 @@ public class OrderRepository {
         // ( 일대다 관계( order:orderItem) - 쿼리를 하면  늘어난 상태로 db에서 데이터를 가지고 오고
         //   jpa는 객체간의 관계를 정리하여 return함. -> 정리하는 과정에서 일대다 관계때문에 늘어난 부분은 컬렉션으로 변경됨.
         //   변경은 되었지만 쿼리에서 가지고 온 데이터 갯수는 뻥튀기된 컬럼갯수이므로 그만큼 채워서 리턴하게됨. )
-        return em.createQuery(
+        /* return em.createQuery(
                 "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d" +
+                        " join fetch o.orderItems oi" +
+                        " join fetch oi.item i", Order.class)
+                .getResultList(); */
+        //distinct를 추가해서 order객체 기준으로 중복을 없앰.(db distinct 처리(모든 컬럼이 똑같을때만 없앰) +
+        //                                              jpa layer에서 Order 객체단위 중복 제거.) => ** 페이징 불가능함.**
+        // 페이징은 일대다 + 패치 조인 인 경우, db에서 페이징작업을 하지 않고, 몽땅 메모리에 올려서 페이징하여 결과를 리턴함.
+        // 애플리케이션에서 메모리를 다 잡아 놓고 처러히게됨. 주의해야함..( 페이지 기준이 app/db 사이에 차이가 있음.)
+        // 일대다 패치조인이 아닌경우, 페이징 처리를 db에서 할수있음.
+        // **DB상 페이징이 안되므로 메모리상에 하여 위험하므로 사용하면 안됨.***
+        // ** 일대다 에 추가로 일대다 쿼리를 처리하면 안됨(컬렉션 둘 이상에 패치 조인을 사용한경우, JPA에서 처리하는게 부정확함).
+        return em.createQuery(
+                "select distinct  o from Order o" +
                         " join fetch o.member m" +
                         " join fetch o.delivery d" +
                         " join fetch o.orderItems oi" +
