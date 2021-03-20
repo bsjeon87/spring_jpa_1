@@ -286,5 +286,38 @@ DTO 조회방식(v4,5,6)
 성능을 최적화하거나 성능 최적화 방식으 ㄹ변경할 때 많은 코드를 변경해야 함.
 => 90프로정도는 커버됨. => 실무에서 커버안된다면 캐쉬(레디스) 도입등의 방법으로 해결하는게 맞는것 같다.(캐쉬할때도 엔티티를 직접 올리면안됨. DTO로 넘겨야함)
 
+------------------
+OSIV와 성능 최적화
+-Open Session In view:하이버네이트
+- Open EntityManager In View: JPA
+(관례상 OSIV)
+
+DB connection Pool
+-> Connection Pool 매니저가 일정의 Connection을 연결하고 있다가 요청이 들어오면 Connection을 할당해줌.
+ 클라이언트는 Connection을 다 쓰면 다시 반납하는 구조로 이루어짐. (DB에 연결하는 고자ㅓㅇ은 시간이 많이 소요되는 연산이므로 Pool을 유지)
+
+Connection Pool을 구현하기 위해 spec을 정해놓은 interface => DataSource임(ex:JDBC Driver내에 자체적으로 내장되어 있음.).
+
+영속성 컨텍스트 생존 범위와 관련되어있음 -> 알아야 실무에서 장애없음.
+(기본적으로 jpa가 영속성 컨텍스트에 데이터 커넥션을 얻어와야함.
+ 언제 jpa 데이터 커넥션을 얻어오는가? 데이터 트랜잭션을 시작할때 영속성 컨텍스트가 데이터베이스 커넥션을 가지고옴.
+ (Controller까지는 영속가능/수정불가 , Service는 영속가능/수정가능)
+
+springboot는 spring.jpa.open-in-view default on.
+ spring.jpa.open-in-view: true / false
+ OSIV enable: Service/repository계층에서 처음 db접근 시 pool을 얻어옴(?). .
+              service/repository 처리 후 Controller로 return한뒤에도 데이터 커넥션을 유지함.(response가 나간 뒤에 반환함.)
+              (controller에서 lazy loading이 가능하도록 하기위해서..)
+        * 단점: 너무 오랫동안 database conenction을 물고 있음.(만약 3초동안 잡고있다면, 3초동안 database connection을 반환하지 않음.)
+      disable: 트랜잭션을 종료할때( @transaction 이 끝나거나 그외에 @Transaction이 없는 경우 query 처리후 바로???),
+               영속성 컨텍스트를 닫고 DB Connection도 반환한다.
+               ( 지연로딩도 트랜잭션 안에서 처리해야함. ) / controller나 view에서 엔티티 수정을해도 db반영안됨(exception발생이 일어날수있음).
+
+* disable시 해결을 위한 방법
+=> 비즈니스 로직이 아닌 query(view/api)용 query service를 별도로 만듬(dto와 함께)
+  ex: OrderService:핵심 비즈니스 로직 / OrderQueryService:화면이나 API에 맞춘 서비스(주로 읽기 전용 트랜잭션 사용)
+   =>유지보수관점에서 좋음( 객체지향 관점으로 책임 분리)
+
+고객서비스 기반 트래픽이 많고 실시간 API는 OSIV를 끄고, 커넥션을 많이 사용하지 않는 곳에서는 OSIV를 켠다.
 
 
