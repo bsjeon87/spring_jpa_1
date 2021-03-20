@@ -198,6 +198,12 @@ ex)
 
 
 ** 웹 기본
+
+java.exe 가 수행될때 프로세서 별로 jvm을 가지고있으며, 독립적인 실행환경이다.
+(java.exe tomcat 실행 시 톰캣을 위한 프로세스내에 jvm이 수행됨.)
+=> 특수하게 여러 jvm instance가 공유하는 메모리/데이터 자원이 있기는 함.( Class data sharing )
+   --> 여러 jvm instance가 loaded된 class를 공유함(shared memory를 통해서 / dll처럼 생각할수 있을듯)->일반적으로 system class들임.
+
 웹서버(아파치) - 정적페이지처리
 웹컨테이너(톰캣) - servelet , jsp등을 수행시킬수있는 컨테이너.
 WAS( 웹서버 + 웹컨테이너) => 아파치 톰캣(아파치 + 톰캣).
