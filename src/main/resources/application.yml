@@ -14,7 +14,7 @@ spring:
 #        show_sql: true # system.out.println을 사용해서 직접사용함.(운용에서 사용하면안됨)
         format_sql: true
         default_batch_fetch_size: 100
-    open-in-view: false
+    open-in-view: true
 
 logging:
   level:
