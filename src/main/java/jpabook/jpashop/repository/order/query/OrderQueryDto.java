@@ -3,11 +3,13 @@ package jpabook.jpashop.repository.order.query;
 import jpabook.jpashop.domain.Address;
 import jpabook.jpashop.domain.OrderStatus;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@EqualsAndHashCode(of = "orderId") // 묶어줄때 기준을 잡기 위함.(다른객체인 OrderFlatDto의 orderId와 묶기위해)
 public class OrderQueryDto {
 
     private Long orderId;
